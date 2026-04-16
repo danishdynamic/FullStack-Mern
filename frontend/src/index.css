@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  themes: light --default, dark --prefersdark, cupcake, forest;
+}
+
+/* we can add forest --default, light, dark --prefersdark, cupcake;
+<html data-theme="forest"> 
+*/
+
+/* we can add the css for themese here, for example:
+[data-theme="forest"] {
+  --btn-bg: #4CAF50;
+  --btn-text-color: #fff;
+}
+*/
+
