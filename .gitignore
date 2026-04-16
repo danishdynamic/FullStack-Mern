@@ -1,4 +1,5 @@
 # Dependency folders
+#Backend 
 node_modules/
 **/node_modules/
 
@@ -17,3 +18,18 @@ build/
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Frontend
+**/dist/
+**/.vite/
+**/out/
+
+
+# Coverage and Testing (Vitest/Jest)
+**/coverage/
+
+
+# Temporary/Cache
+.eslintcache
+.stylelintcache
+**/node_modules/.cache/

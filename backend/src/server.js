@@ -15,9 +15,7 @@ app.use(express.json());
 // Global Middleware to parse JSON bodies and runs before each route handler i.e app.use() 
 // it doesnt directly interacts with routes and controllers.
 // express.json() runs first and parses body i.e attaches to req.body inside notesController.js and then the route handler runs and can access req.body.
-
-app.use(rateLimiter); // Apply the rate limiter middleware globally to all routes. This will ensure that all incoming requests are subject to the defined rate limits, helping to protect the server from abuse and ensuring fair usage.
-
+// app.use(rateLimiter); we can apply ratelimiter globally or better inside routes that modify data (POST, PUT, DELETE) to prevent abuse. Applying globally would also limit GET requests which might not be necessary. So we will apply it inside notesRoutes.js for POST, PUT, DELETE routes.
 // our custom middleware to log incoming requests (for debugging purposes)
 //app.use((req, res, next) => {
   //console.log (`✅ Request method is ${req.method}, req.url is ${req.url}`);
