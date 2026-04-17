@@ -17,11 +17,17 @@ app.use(express.json());
 app.use("/api/notes", notesRoutes); // This means that for any request that starts with /api/notes, the notesRoutes will handle it.
 
 // Now this will connect to the database before starting the server. If the connection is successful, it will log a success message. If it fails, it will log the error and exit the process with a failure code. This ensures that the server only starts if the database connection is established successfully, preventing potential issues with handling requests without a database connection.
+if (process.env.NODE_ENV !== "test") {
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
   });
 });
+} else {
+  console.log("Running in test mode, skipping database connection and server startup.");
+}
+
+export default app; // Exporting the app for testing purposes. This allows us to import the Express app instance in our test files and use it to make requests to our API endpoints using supertest or similar libraries.
 
 
 // Global Middleware to parse JSON bodies and runs before each route handler i.e app.use() 

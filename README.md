@@ -173,9 +173,50 @@ This app is deployment-ready:
 
 ---
 
-## 📚 Topics
+## 📚 Tests
 
-nodejs, reactjs, localstorage, expressjs, mongodb-atlas, tailwindcss, axios, react-hot-toast, daisyui, render-deployment, upstash-ratelimit, lucide-react
+This project includes both **unit tests** and **integration tests** to ensure reliability and correctness of the application. WE can also add end-to-end (E2E) tests in the future using tools like Cypress.
+
+---
+
+### 🧪 Unit Testing (Vitest)
+
+Unit tests focus on testing individual parts of the application in isolation.
+
+- Controllers are tested independently
+- Database calls (Mongoose) are **mocked**
+- Ensures business logic works correctly
+
+#### 🔧 Tools Used
+- Vitest
+- Mocking with `vi.mock()`
+
+#### ▶️ Run Unit Tests
+
+```bash
+npm run test
+```
+
+### 🌐 Integration Testing (Supertest)
+
+Integration tests validate the complete request flow:
+
+API routes
+Middleware
+Controllers
+Database interaction
+
+These tests simulate real HTTP requests to the backend.
+
+### 🔧 Tools Used
+
+- Supertest
+- Vitest
+- ▶️ Run Integration Tests
+
+```bash
+npm run test
+```
 
 ---
 
