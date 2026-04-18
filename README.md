@@ -160,7 +160,40 @@ This app is deployment-ready:
 - Backend → Render
 - Database → MongoDB Atlas
 - Rate limiting → Upstash Redis
+- For production we can also use Unified Monorepo such as moving both frontend and backend into a single repository with shared configuration.(optional as we have to update cors and server.js and add a file i.e package.json).
+- In package.json and server.js we can add the following scripts to run both frontend and backend together in production.
+```bash
+- package.json
 
+"scripts": {
+  "start": "node server.js",
+  "build": "npm install && cd frontend && npm install && npm run build",
+  "test": "vitest run"
+}
+
+-server.js
+
+// SERVE FRONTEND and import path module
+
+if (process.env.NODE_ENV === 'production') {
+  // Point to the frontend build folder
+  app.use(express.static(path.join(__dirname, './frontend/dist'))); 
+
+  // Handle SPA routing: send all non-API requests to index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+  });
+}
+```
+- If you want to deploy both frontend and backend separately i.e Decoupled Architecture. We can deploy backend (render)first and then update the frontend (vercel )API calls to point to the deployed backend URL. 
+ 
+```bash
+app.use(cors({
+  origin: 'https://your-frontend-url.vercel.app', // Replace with your Vercel URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+```
 ---
 
 ## 📌 Future Improvements
