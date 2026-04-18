@@ -9,34 +9,45 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: [frontend, backend]
+
+    services:
+      mongodb:
+        image: mongo:6.0 
+        ports:
+          - 27017:27017
+      redis:
+        image: redis:7.0
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+          cache-dependency-path: ${{ matrix.component }}/package-lock.json
 
-      - name: Install root deps
-        run: npm install
-
-      - name: Install frontend deps
+      - name: Install Dependencies
         run: |
-          cd frontend
+          cd ${{ matrix.component }}
           npm install
 
-      - name: Install backend deps
+      - name: Run ${{ matrix.component }} Tests
+        env:
+          MONGODB_URI: mongodb://localhost:27017/test_db
+          REDIS_URL: redis://localhost:6379
+          NODE_ENV: test
         run: |
-          cd backend
-          npm install
-
-      - name: Run frontend tests
-        run: |
-          cd frontend
-          npm run test
-
-      - name: Run backend tests
-        run: |
-          cd backend
+          cd ${{ matrix.component }}
           npm run test
