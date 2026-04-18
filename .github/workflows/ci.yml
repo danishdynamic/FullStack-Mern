@@ -7,33 +7,30 @@ on:
     branches: [main, develop]
 
 jobs:
-  test:
+  test-backend:
+    name: Backend Tests
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # This splits the work into two parallel jobs
-        component: [frontend, backend]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-          # Looks for lock file in the specific sub-folder
-          cache-dependency-path: ${{ matrix.component }}/package-lock.json
+          # Points to the backend lock file for caching speed
+          cache-dependency-path: backend/package-lock.json
 
-      - name: Install Dependencies
-        # Use 'working-directory' instead of manual 'cd' for better reliability and matrix for parallelism of frontend/backend.                  
-        working-directory: ./${{ matrix.component }}
+      - name: Install Backend Dependencies
+        working-directory: ./backend
         run: npm install
 
-      - name: Run Tests
-        working-directory: ./${{ matrix.component }}
+      - name: Run Vitest Integration Tests
+        working-directory: ./backend
+        # Injecting the secrets you just created in GitHub Settings
         env:
-          # These are passed to the environment for the test command
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
