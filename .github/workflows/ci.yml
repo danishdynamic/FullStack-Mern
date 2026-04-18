@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        # This splits the work into two parallel jobs
         component: [frontend, backend]
 
     steps:
@@ -21,21 +22,20 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+          # Looks for lock file in the specific sub-folder
           cache-dependency-path: ${{ matrix.component }}/package-lock.json
 
       - name: Install Dependencies
-        run: |
-          cd ${{ matrix.component }}
-          npm install
+        # Use 'working-directory' instead of manual 'cd' for better reliability and matrix for parallelism of frontend/backend.                  
+        working-directory: ./${{ matrix.component }}
+        run: npm install
 
-      - name: Run backend ${{ matrix.component }} Tests
-        working-directory: ./backend
+      - name: Run Tests
+        working-directory: ./${{ matrix.component }}
         env:
-          # Injecting your Repository Secrets here
+          # These are passed to the environment for the test command
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
           NODE_ENV: test
-        run: |
-          cd ${{ matrix.component }}
-          npm run test
+        run: npm run test
