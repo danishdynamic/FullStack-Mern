@@ -13,21 +13,6 @@ jobs:
       matrix:
         component: [frontend, backend]
 
-    services:
-      mongodb:
-        image: mongo:6.0 
-        ports:
-          - 27017:27017
-      redis:
-        image: redis:7.0
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -45,8 +30,10 @@ jobs:
 
       - name: Run ${{ matrix.component }} Tests
         env:
-          MONGODB_URI: mongodb://localhost:27017/test_db
-          REDIS_URL: redis://localhost:6379
+          # Injecting your Repository Secrets here
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
           NODE_ENV: test
         run: |
           cd ${{ matrix.component }}
