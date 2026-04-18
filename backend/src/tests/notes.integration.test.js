@@ -1,5 +1,5 @@
 import request from "supertest";
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import app from "../server.js";
 import mongoose from "mongoose";
 import connectDB from "../config/db.js";
@@ -9,6 +9,10 @@ describe("Notes API Integration", () => {
   beforeAll(async () => {
     process.env.NODE_ENV = "test";
     await connectDB();
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.close();
   });
 
   // ✅ CREATE NOTE
